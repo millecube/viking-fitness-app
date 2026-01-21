@@ -39,6 +39,36 @@ export interface WorkoutSession {
   xpEarned: number; // For gamification
 }
 
+// --- NEW TYPES FOR ACTIVITY PLANNER ---
+
+export type ExerciseLevel = 'Beginner' | 'Intermediate' | 'Pro' | 'Elite';
+
+export interface Exercise {
+  id: string;
+  branchId: string; // Custom exercises can be branch specific
+  name: string;
+  description: string;
+  defaultCaloriesPerMinute: number;
+  defaultDurationMinutes: number;
+  level: ExerciseLevel;
+  type: 'Strength' | 'Cardio' | 'Muscle' | 'Flexibility';
+  imageUrl?: string;
+}
+
+export interface PlannedActivity {
+  id: string;
+  exerciseId: string;
+  exercise: Exercise; // Hydrated for display
+  customName?: string; // Allow renaming in plan
+  targetDurationMinutes: number;
+  targetQty?: number; // Sets
+  targetReps?: number; // Reps
+  calculatedCalories: number;
+  completed: boolean;
+}
+
+// --------------------------------------
+
 export interface BodyLog {
   id: string;
   userId: string;

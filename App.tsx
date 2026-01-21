@@ -7,6 +7,7 @@ import { MemberDashboard } from './views/MemberDashboard';
 import { CommunityFeed } from './views/CommunityFeed';
 import { BodyTracker } from './views/BodyTracker';
 import { TrainingHub } from './views/TrainingHub';
+import { ActivitySchedule } from './views/ActivitySchedule';
 import { ProfileEditor } from './views/ProfileEditor';
 import { Navigation } from './components/Navigation';
 import { Button } from './components/Button';
@@ -56,11 +57,18 @@ const App: React.FC = () => {
   const renderDashboard = () => {
     if (!user) return null;
     
+    // Global Views (Accessible by all)
     if (currentView === 'profile') return <ProfileEditor user={user} onUpdateUser={handleUpdateUser} />;
     if (currentView === 'community') return <CommunityFeed user={user} />;
-    if (user.role === UserRole.MEMBER && currentView === 'bodytracker') return <BodyTracker user={user} />;
-    if (user.role === UserRole.MEMBER && currentView === 'training') return <TrainingHub user={user} onUpdateUser={handleUpdateUser} />;
+    if (currentView === 'schedule') return <ActivitySchedule user={user} />;
+    
+    // Member Specific Views
+    if (user.role === UserRole.MEMBER) {
+        if (currentView === 'bodytracker') return <BodyTracker user={user} />;
+        if (currentView === 'training') return <TrainingHub user={user} onUpdateUser={handleUpdateUser} />;
+    }
 
+    // Default Dashboard Views
     if (currentView === 'dashboard') {
       switch (user.role) {
         case UserRole.ADMIN: return <AdminDashboard user={user} />;
@@ -70,6 +78,7 @@ const App: React.FC = () => {
       }
     }
 
+    // Fallback for non-implemented views for other roles
     return (
       <div className="flex flex-col items-center justify-center h-[50vh] text-viking-grey animate-in fade-in">
         <Sword size={48} className="mb-4 opacity-20" />

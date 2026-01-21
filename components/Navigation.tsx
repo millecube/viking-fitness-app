@@ -99,6 +99,7 @@ export const Navigation: React.FC<NavigationProps> = ({ user, onLogout, currentV
                   <>
                     <NavItem view="branches" icon={Map} label="Branches" />
                     <NavItem view="users" icon={Users} label="Users" />
+                    <NavItem view="schedule" icon={Activity} label="Activity" />
                   </>
                 )}
                 
@@ -106,6 +107,7 @@ export const Navigation: React.FC<NavigationProps> = ({ user, onLogout, currentV
                   <>
                     <NavItem view="students" icon={Users} label="Students" />
                     <NavItem view="programming" icon={Dumbbell} label="Programs" />
+                    <NavItem view="schedule" icon={Activity} label="Activity" />
                   </>
                 )}
 
@@ -166,6 +168,7 @@ export const Navigation: React.FC<NavigationProps> = ({ user, onLogout, currentV
           </>
         ) : (
           <>
+             <MobileNavItem view="schedule" icon={Activity} label="Activity" />
              <MobileNavItem view="community" icon={MessageSquare} label="Chat" />
              <MobileNavItem view="profile" icon={Settings} label="Admin" />
              <button onClick={onLogout} className="flex flex-col items-center justify-center w-full h-full text-viking-grey hover:text-red-500 transition-colors">
