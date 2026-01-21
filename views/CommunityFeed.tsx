@@ -53,8 +53,8 @@ export const CommunityFeed: React.FC<CommunityFeedProps> = ({ user }) => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6 animate-in slide-in-from-bottom-4 duration-500">
-      <div className="flex justify-between items-center mb-6">
+    <div className="max-w-3xl mx-auto space-y-6">
+      <div className="flex justify-between items-center mb-6 animate-in slide-in-from-top duration-500">
         <div>
            <h2 className="text-3xl font-black text-viking-blue dark:text-white uppercase tracking-tight font-display">The Arena</h2>
            <p className="text-sm text-viking-grey font-medium">Branch Community: <span className="text-viking-action font-bold uppercase">{user.branchId}</span></p>
@@ -62,7 +62,7 @@ export const CommunityFeed: React.FC<CommunityFeedProps> = ({ user }) => {
       </div>
 
       {/* Create Post Input */}
-      <div className="bg-white dark:bg-viking-blueLight border border-viking-grey/20 p-6 mb-8 shadow-sm rounded-3xl">
+      <div className="bg-white dark:bg-viking-blueLight border border-viking-grey/20 p-6 mb-8 shadow-xl rounded-[2rem] animate-in zoom-in-95 duration-500 delay-100">
         <div className="flex gap-4">
           <img src={user.avatarUrl} alt={user.name} className="w-12 h-12 rounded-full object-cover border border-viking-grey/30" />
           <div className="flex-1 space-y-3">
@@ -70,13 +70,13 @@ export const CommunityFeed: React.FC<CommunityFeedProps> = ({ user }) => {
               value={newPostContent}
               onChange={(e) => setNewPostContent(e.target.value)}
               placeholder="Share your victory..."
-              className="w-full bg-viking-offWhite dark:bg-viking-blue text-viking-blue dark:text-white placeholder:text-viking-grey focus:outline-none resize-none min-h-[80px] p-3 border border-viking-grey/10 focus:border-viking-action transition-colors rounded-xl"
+              className="w-full bg-viking-offWhite dark:bg-viking-blue text-viking-blue dark:text-white placeholder:text-viking-grey focus:outline-none resize-none min-h-[80px] p-3 border border-viking-grey/10 focus:border-viking-action transition-colors rounded-2xl"
             />
             <div className="flex justify-between items-center pt-3 border-t border-viking-grey/10">
                <div className="flex gap-2 text-viking-action">
                  <button className="p-2 hover:bg-viking-blue/5 dark:hover:bg-white/10 rounded-full transition-colors"><ImageIcon size={20} /></button>
                </div>
-               <Button size="sm" onClick={handlePost} disabled={!newPostContent.trim()}>
+               <Button size="sm" onClick={handlePost} disabled={!newPostContent.trim()} className="shadow-lg">
                  <Send size={14} className="mr-2" />
                  POST
                </Button>
@@ -87,15 +87,19 @@ export const CommunityFeed: React.FC<CommunityFeedProps> = ({ user }) => {
 
       {/* Feed */}
       {loading ? (
-        <div className="text-center text-viking-grey py-10 font-bold uppercase tracking-widest">Loading The Arena...</div>
+        <div className="text-center text-viking-grey py-10 font-bold uppercase tracking-widest animate-pulse">Loading The Arena...</div>
       ) : (
-        <div className="space-y-6">
-          {posts.map(post => {
+        <div className="space-y-6 animate-in slide-in-from-bottom duration-700 delay-200">
+          {posts.map((post, index) => {
             const author = postAuthors[post.authorId] || { name: 'Unknown User', avatarUrl: '' };
             const isMe = user.id === post.authorId;
 
             return (
-              <div key={post.id} className="bg-white dark:bg-viking-blueLight border border-viking-grey/10 p-6 hover:border-viking-action/30 transition-colors shadow-sm rounded-3xl">
+              <div 
+                key={post.id} 
+                className="bg-white dark:bg-viking-blueLight border border-viking-grey/10 p-6 hover:border-viking-action/30 transition-all shadow-md rounded-[2rem] hover:shadow-xl hover:-translate-y-1 duration-300"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
                 <div className="flex gap-4 mb-4">
                   <img src={author.avatarUrl} alt={author.name} className="w-12 h-12 rounded-full object-cover border border-viking-grey/20" />
                   <div>
@@ -109,14 +113,14 @@ export const CommunityFeed: React.FC<CommunityFeedProps> = ({ user }) => {
                 
                 <p className="text-viking-blue dark:text-white mb-5 whitespace-pre-wrap leading-relaxed">{post.content}</p>
                 {post.imageUrl && (
-                  <div className="mb-5 overflow-hidden border border-viking-grey/10 rounded-xl">
+                  <div className="mb-5 overflow-hidden border border-viking-grey/10 rounded-2xl shadow-sm">
                     <img src={post.imageUrl} alt="Post content" className="w-full h-auto object-cover max-h-96" />
                   </div>
                 )}
 
                 <div className="flex items-center gap-8 text-viking-grey text-sm font-medium">
                   <button className="flex items-center gap-2 hover:text-red-500 transition-colors group">
-                    <Heart size={20} className="group-hover:fill-red-500" />
+                    <Heart size={20} className="group-hover:fill-red-500 transition-all group-active:scale-125" />
                     {post.likes}
                   </button>
                   <button className="flex items-center gap-2 hover:text-viking-action transition-colors">

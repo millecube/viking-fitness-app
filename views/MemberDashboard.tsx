@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Card } from '../components/Card';
-import { Button } from '../components/Button';
 import { User, WorkoutSession } from '../types';
 import { db } from '../services/mockDb';
-import { BarChart, Bar, ResponsiveContainer, Cell, XAxis } from 'recharts';
-import { ArrowUpRight, Footprints } from 'lucide-react';
+import { AreaChart, Area, ResponsiveContainer, Tooltip } from 'recharts';
+import { Flame, Clock, Scale, ChevronRight, Activity, Trophy } from 'lucide-react';
+import { Button } from '../components/Button';
 
 interface MemberDashboardProps {
   user: User;
@@ -21,203 +21,170 @@ export const MemberDashboard: React.FC<MemberDashboardProps> = ({ user }) => {
     loadData();
   }, [user]);
 
-  // Mock Data for Heart Rate Chart
-  const heartRateData = [
-    { name: '10', val: 40 },
-    { name: '12', val: 70 },
-    { name: '14', val: 50 },
-    { name: '16', val: 80 },
-    { name: '18', val: 60 },
-    { name: '20', val: 30 },
-    { name: '22', val: 55 },
+  // Smoother mock data for the area chart
+  const activityData = [
+    { name: 'Mon', val: 120 },
+    { name: 'Tue', val: 300 },
+    { name: 'Wed', val: 200 },
+    { name: 'Thu', val: 450 },
+    { name: 'Fri', val: 280 },
+    { name: 'Sat', val: 390 },
+    { name: 'Sun', val: 500 },
   ];
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500 max-w-5xl mx-auto">
-      {/* Header */}
-      <div className="flex justify-between items-center mb-4">
+    <div className="space-y-8 pb-24 md:pb-0">
+      
+      {/* Header Section */}
+      <div className="flex justify-between items-start animate-in slide-in-from-top-4 fade-in duration-700">
         <div>
-           <p className="text-viking-grey text-sm font-semibold">Good Morning</p>
-           <h1 className="text-3xl font-bold text-viking-blue dark:text-white font-display">{user.name}</h1>
+           <p className="text-viking-grey text-sm font-semibold mb-1">Good Morning</p>
+           <h1 className="text-3xl md:text-4xl font-black text-viking-blue dark:text-white font-display tracking-tight leading-none">
+             {user.name}
+           </h1>
         </div>
-        <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-viking-action shadow-lg">
-           <img src={user.avatarUrl} alt="Profile" className="w-full h-full object-cover" />
-        </div>
+        <button className="w-12 h-12 rounded-full bg-viking-offWhite dark:bg-white/10 flex items-center justify-center hover:bg-viking-blue hover:text-white dark:hover:bg-white dark:hover:text-viking-blue transition-all shadow-lg shadow-black/5 hover:scale-110">
+           <Activity size={20} />
+        </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      {/* Progress Card */}
+      <div className="relative overflow-hidden rounded-[2.5rem] bg-viking-blue dark:bg-viking-blueLight text-white shadow-2xl group cursor-pointer animate-in zoom-in-95 fade-in duration-700 delay-100 hover:scale-[1.02] transition-transform">
+         {/* Background Image / Gradient */}
+         <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-transparent z-10"></div>
+         <img 
+            src="https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?q=80&w=2069&auto=format&fit=crop" 
+            alt="Training" 
+            className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700"
+         />
+         
+         <div className="relative z-20 p-8 flex flex-col h-48 justify-between">
+            <div className="flex justify-between items-start">
+               <div className="w-12 h-12 rounded-xl overflow-hidden border-2 border-white/20 shadow-lg">
+                  <img src={user.avatarUrl} alt="Me" className="w-full h-full object-cover" />
+               </div>
+               <span className="px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-md text-xs font-bold uppercase tracking-wider border border-white/10 shadow-lg">
+                 Advanced
+               </span>
+            </div>
+            
+            <div>
+               <h3 className="text-3xl font-display font-black mb-1 drop-shadow-lg">21 trainings</h3>
+               <div className="flex items-center justify-between">
+                  <p className="text-sm text-white/70 font-medium drop-shadow-md">8 trainings to PRO level</p>
+                  <div className="w-10 h-10 rounded-full border-2 border-white/30 border-t-white flex items-center justify-center bg-white/10 backdrop-blur-sm">
+                     <span className="text-[10px] font-bold">72%</span>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+
+      <div className="animate-in slide-in-from-bottom-8 fade-in duration-700 delay-200">
+        <h2 className="text-xl font-bold text-viking-blue dark:text-white mb-6 font-display">Performance</h2>
         
-        {/* Left Col: Heart Rate Zone */}
-        <div className="space-y-6">
-            {/* 
-                Visual Logic:
-                Light Mode: White Card, Dark Text, Blue Chart.
-                Dark Mode: Blue Card, White Text, White Chart.
-            */}
-           <Card className="relative h-[420px]" title="Target Heart Rate Zone">
-              <div className="flex gap-4 mb-6">
-                 <div className="flex items-center gap-2">
-                    <span className="w-3 h-3 rounded-full bg-viking-action"></span>
-                    <span className="text-xs text-viking-grey">Below zones</span>
-                 </div>
-                 <div className="flex items-center gap-2">
-                    <span className="w-3 h-3 rounded-full bg-viking-blue dark:bg-white"></span>
-                    <span className="text-xs text-viking-grey">Fat Burn</span>
-                 </div>
-              </div>
-
-              <div className="h-64 w-full">
-                 <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={heartRateData} barGap={8}>
-                       <XAxis 
-                          dataKey="name" 
-                          axisLine={false} 
-                          tickLine={false} 
-                          tick={{fill: '#94A3B8', fontSize: 12}} 
-                          dy={10}
-                       />
-                       <Bar dataKey="val" radius={[20, 20, 20, 20]} barSize={32}>
-                          {heartRateData.map((entry, index) => (
-                             /* 
-                                Chart Coloring:
-                                Light: Default bars are Navy, Highlight is Action Blue.
-                                Dark: Default bars are White/20, Highlight is White.
-                             */
-                             <Cell 
-                                key={`cell-${index}`} 
-                                className="fill-viking-blue/20 dark:fill-white/20"
-                                style={index === 3 ? { fill: 'currentColor', color: 'var(--color-highlight)' } : {}}
-                             />
-                          ))}
-                       </Bar>
-                    </BarChart>
-                 </ResponsiveContainer>
-                 {/* Hack to inject dynamic CSS var for highlighted cell based on mode */}
-                 <style>{`
-                    :root { --color-highlight: #0057B8; } 
-                    .dark { --color-highlight: #FFFFFF; }
-                 `}</style>
-              </div>
-
-              <div className="flex justify-between items-end mt-4 px-2">
-                 <div>
-                    <span className="text-4xl font-bold text-viking-blue dark:text-white font-display">186</span>
-                    <p className="text-xs text-viking-grey mt-1">Peak BPM</p>
-                 </div>
-                 <div className="text-right">
-                    <span className="text-xl font-bold text-viking-blue dark:text-white font-display">44</span>
-                    <p className="text-xs text-viking-grey mt-1">Resting BPM</p>
-                 </div>
-              </div>
-           </Card>
+        {/* Metrics Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
            
-           {/* Agenda / Steps */}
-           <div className="flex flex-col sm:flex-row gap-8 items-start pt-4">
-              <div className="flex-1">
-                 <p className="text-viking-blue dark:text-white font-bold mb-2">1 Agenda :</p>
-                 <div className="flex items-center gap-2 text-viking-grey">
-                    <span className="w-2 h-2 rounded-full bg-viking-blue dark:bg-white"></span>
-                    Walking
-                 </div>
+           {/* Metric 1: Weight */}
+           <div className="bg-white dark:bg-viking-blueLight rounded-[2rem] p-6 flex flex-col justify-between h-44 shadow-lg border border-viking-grey/5 hover:-translate-y-1 transition-transform duration-300">
+              <div className="flex items-center gap-2 text-viking-blue dark:text-white font-bold">
+                 <Scale size={18} />
               </div>
-              <div className="flex-1">
-                 <p className="text-viking-grey text-sm font-medium mb-1">Steps :</p>
-                 <h2 className="text-5xl font-bold text-viking-blue dark:text-white font-display tracking-tight">7.435</h2>
+              <div>
+                 <p className="text-xs text-viking-grey uppercase font-bold tracking-wider mb-1">Weight</p>
+                 <span className="text-3xl font-black text-viking-blue dark:text-white font-display">63</span>
+                 <span className="text-sm text-viking-grey ml-1 font-medium">kg</span>
               </div>
            </div>
-        </div>
 
-        {/* Right Col: Daily Activities Grid */}
-        <div className="space-y-6">
-           <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-viking-blue dark:text-white font-display">Daily Activities</h2>
-              <span className="text-xs font-bold text-viking-grey uppercase">Today</span>
+           {/* Metric 2: Kcal Burn (Highlighted) */}
+           <div className="bg-viking-action rounded-[2rem] p-6 flex flex-col justify-between h-44 shadow-[0_10px_40px_-10px_rgba(0,87,184,0.5)] relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300">
+              <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-2xl group-hover:bg-white/20 transition-colors"></div>
+              <div className="flex items-center gap-2 text-white font-bold relative z-10">
+                 <Flame size={20} fill="currentColor" />
+              </div>
+              <div className="relative z-10">
+                 <p className="text-xs text-white/80 uppercase font-bold tracking-wider mb-1">Kcal Burn</p>
+                 <span className="text-4xl font-black text-white font-display">5,423</span>
+              </div>
            </div>
 
-           <div className="grid grid-cols-2 gap-6">
-              {/* Weight Card */}
-              <Card className="h-48 relative group hover:shadow-lg transition-all cursor-pointer">
-                 <div className="absolute top-6 right-6 p-2 rounded-full bg-viking-blue text-white dark:bg-white dark:text-viking-blue transition-colors">
-                    <ArrowUpRight size={18} />
+           {/* Metric 3: Total Duration */}
+           <div className="col-span-2 md:col-span-1 bg-white dark:bg-viking-blueLight rounded-[2rem] p-6 flex flex-col justify-between h-44 shadow-lg border border-viking-grey/5 hover:-translate-y-1 transition-transform duration-300">
+              <div className="flex items-center gap-2 text-viking-blue dark:text-white font-bold">
+                 <Clock size={18} />
+              </div>
+              <div>
+                 <p className="text-xs text-viking-grey uppercase font-bold tracking-wider mb-1">Total Duration</p>
+                 <div className="flex items-baseline">
+                   <span className="text-3xl font-black text-viking-blue dark:text-white font-display">3</span>
+                   <span className="text-sm text-viking-blue dark:text-white font-bold mr-2">h</span>
+                   <span className="text-3xl font-black text-viking-blue dark:text-white font-display">46</span>
+                   <span className="text-sm text-viking-blue dark:text-white font-bold">m</span>
                  </div>
-                 <div className="flex flex-col justify-between h-full">
-                    <div className="flex items-center gap-2 text-viking-blue dark:text-white font-bold">
-                       <span className="p-1.5 border-2 border-viking-blue dark:border-white rounded-md">
-                          <div className="w-0.5 h-3 bg-viking-blue dark:bg-white mx-auto"></div>
-                       </span>
-                       Weight
-                    </div>
-                    <div>
-                       <span className="text-3xl font-bold text-viking-blue dark:text-white font-display">72.2</span>
-                       <span className="text-sm font-medium text-viking-grey ml-1">kg</span>
-                       <p className="text-xs text-viking-grey mt-1">Stable Weight</p>
-                    </div>
-                 </div>
-              </Card>
-
-              {/* Heart Rate Card - Highlighting Action Blue */}
-              <Card variant="highlight" className="h-48 relative group hover:shadow-lg transition-all cursor-pointer">
-                 <div className="absolute top-6 right-6 p-2 rounded-full bg-white text-viking-action transition-colors">
-                    <ArrowUpRight size={18} />
-                 </div>
-                 <div className="flex flex-col justify-between h-full">
-                    <div className="flex items-center gap-2 text-white font-bold">
-                       <span className="text-xl">♥</span>
-                       Heart Rate
-                    </div>
-                    <div>
-                       <span className="text-3xl font-bold text-white font-display">101</span>
-                       <span className="text-sm font-medium text-white/80 ml-1">bpm</span>
-                       <div className="mt-2 inline-block px-2 py-0.5 rounded bg-white/20 text-[10px] font-bold uppercase tracking-wider">
-                          High HR
-                       </div>
-                    </div>
-                 </div>
-              </Card>
-
-              {/* Body Composition Card - Full Width */}
-              <Card className="col-span-2 relative group hover:shadow-lg transition-all cursor-pointer">
-                  <div className="absolute top-6 right-6 p-2 rounded-full bg-viking-blue text-white dark:bg-white dark:text-viking-blue transition-colors">
-                    <ArrowUpRight size={18} />
-                 </div>
-                 <div className="flex flex-col md:flex-row justify-between items-end gap-6 h-full">
-                    <div className="flex-1 w-full">
-                       <div className="flex items-center gap-2 text-viking-blue dark:text-white font-bold mb-6">
-                          <Footprints size={18} />
-                          Body Composition
-                       </div>
-                       
-                       <div className="flex items-baseline gap-1">
-                          <span className="text-4xl font-bold text-viking-blue dark:text-white font-display">87.9</span>
-                          <span className="text-xl text-viking-grey font-display">%</span>
-                       </div>
-                       
-                       <div className="mt-4 inline-block px-3 py-1 rounded-full bg-viking-blue text-white dark:bg-white dark:text-viking-blue text-xs font-bold">
-                          Gaining Muscle
-                       </div>
-                    </div>
-
-                    {/* Visual Progress Bar */}
-                    <div className="w-full md:w-1/2">
-                       <div className="flex h-12 gap-1 items-end">
-                          <div className="h-full w-full bg-viking-blue dark:bg-white rounded-2xl opacity-90 relative">
-                             <div className="absolute right-0 top-0 bottom-0 w-1 bg-white/50 dark:bg-black/20"></div>
-                          </div>
-                          <div className="h-10 w-full bg-viking-blue/30 dark:bg-white/30 rounded-2xl"></div>
-                          <div className="h-8 w-full bg-viking-blue/10 dark:bg-white/10 rounded-2xl"></div>
-                       </div>
-                       <div className="flex justify-between text-[10px] text-viking-grey mt-2 px-1">
-                          <span>60</span>
-                          <span>70</span>
-                          <span>80</span>
-                          <span>90</span>
-                       </div>
-                    </div>
-                 </div>
-              </Card>
+              </div>
            </div>
         </div>
       </div>
+
+      {/* Chart Section */}
+      <div className="bg-viking-blue dark:bg-black/20 rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-2xl animate-in slide-in-from-bottom-8 fade-in duration-700 delay-300">
+         <div className="flex justify-between items-center mb-8 relative z-10">
+            <div>
+               <p className="text-xs text-white/60 font-bold uppercase tracking-wider mb-1">Total Average</p>
+               <div className="flex items-baseline gap-2">
+                 <span className="text-4xl font-black font-display text-viking-action drop-shadow-[0_0_10px_rgba(0,87,184,0.5)]">556</span>
+                 <span className="text-lg font-bold text-white/80">Kcal</span>
+               </div>
+            </div>
+            <div className="flex gap-2">
+               <button className="px-4 py-2 rounded-full bg-white/10 text-xs font-bold hover:bg-white/20 transition-colors backdrop-blur-sm border border-white/5">Kcal</button>
+               <button className="px-4 py-2 rounded-full bg-white/10 text-xs font-bold hover:bg-white/20 transition-colors backdrop-blur-sm border border-white/5">Weekly</button>
+            </div>
+         </div>
+
+         <div className="h-40 w-full relative z-10 -ml-2">
+            <ResponsiveContainer width="100%" height="100%">
+               <AreaChart data={activityData}>
+                  <defs>
+                     <linearGradient id="colorVal" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#EA4335" stopOpacity={0.8}/>
+                        <stop offset="95%" stopColor="#EA4335" stopOpacity={0}/>
+                     </linearGradient>
+                  </defs>
+                  <Tooltip 
+                     contentStyle={{ backgroundColor: 'rgba(19, 36, 54, 0.9)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(8px)' }}
+                     itemStyle={{ color: '#fff', fontWeight: 'bold' }}
+                     cursor={{ stroke: 'rgba(255,255,255,0.1)', strokeWidth: 2 }}
+                  />
+                  <Area 
+                     type="monotone" 
+                     dataKey="val" 
+                     stroke="#EA4335" 
+                     fillOpacity={1} 
+                     fill="url(#colorVal)" 
+                     strokeWidth={4}
+                  />
+               </AreaChart>
+            </ResponsiveContainer>
+         </div>
+      </div>
+
+      {/* Quick Action (Start Workout) */}
+      <div className="animate-in slide-in-from-bottom-8 fade-in duration-700 delay-400">
+         <Button 
+            fullWidth 
+            size="lg" 
+            className="rounded-[2rem] bg-viking-action text-white font-black uppercase tracking-widest text-lg shadow-[0_10px_40px_-10px_rgba(0,87,184,0.6)] flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] transition-all border border-white/20"
+         >
+            <div className="w-8 h-8 rounded-full bg-white text-viking-action flex items-center justify-center shadow-md">
+               <Flame size={18} fill="currentColor" />
+            </div>
+            Start Workout
+         </Button>
+      </div>
+
     </div>
   );
 };

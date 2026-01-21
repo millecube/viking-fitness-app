@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { User, UserRole } from './types';
 import { db } from './services/mockDb';
 import { AdminDashboard } from './views/AdminDashboard';
@@ -6,10 +6,11 @@ import { CoachDashboard } from './views/CoachDashboard';
 import { MemberDashboard } from './views/MemberDashboard';
 import { CommunityFeed } from './views/CommunityFeed';
 import { BodyTracker } from './views/BodyTracker';
+import { TrainingHub } from './views/TrainingHub';
 import { ProfileEditor } from './views/ProfileEditor';
 import { Navigation } from './components/Navigation';
 import { Button } from './components/Button';
-import { Lock, Sword } from 'lucide-react';
+import { Lock, Sword, ArrowRight } from 'lucide-react';
 
 const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -19,6 +20,9 @@ const App: React.FC = () => {
   // Login State
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
+  
+  // Torchlight Effect State
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,12 +30,11 @@ const App: React.FC = () => {
     setError('');
     
     try {
-      // Simulate API call
       const foundUser = await db.getUserByEmail(email);
       if (foundUser) {
         setUser(foundUser);
       } else {
-        setError('User not found. Try: admin@hyper.com, jax@hyper.com, or johnny@gmail.com');
+        setError('User not found. Try: admin@hyper.com');
       }
     } catch (err) {
       setError('System error. Please retry.');
@@ -50,40 +53,25 @@ const App: React.FC = () => {
       setUser(updatedUser);
   };
 
-  // Render Dashboard based on Role
   const renderDashboard = () => {
     if (!user) return null;
     
-    // Shared Views
-    if (currentView === 'profile') {
-        return <ProfileEditor user={user} onUpdateUser={handleUpdateUser} />;
-    }
+    if (currentView === 'profile') return <ProfileEditor user={user} onUpdateUser={handleUpdateUser} />;
+    if (currentView === 'community') return <CommunityFeed user={user} />;
+    if (user.role === UserRole.MEMBER && currentView === 'bodytracker') return <BodyTracker user={user} />;
+    if (user.role === UserRole.MEMBER && currentView === 'training') return <TrainingHub user={user} onUpdateUser={handleUpdateUser} />;
 
-    if (currentView === 'community') {
-      return <CommunityFeed user={user} />;
-    }
-
-    // Role Specific Views
-    if (user.role === UserRole.MEMBER && currentView === 'bodytracker') {
-      return <BodyTracker user={user} />;
-    }
-
-    // Default Dashboard View
     if (currentView === 'dashboard') {
       switch (user.role) {
-        case UserRole.ADMIN:
-          return <AdminDashboard user={user} />;
-        case UserRole.COACH:
-          return <CoachDashboard user={user} />;
-        case UserRole.MEMBER:
-          return <MemberDashboard user={user} />;
-        default:
-          return <div>Unknown Role</div>;
+        case UserRole.ADMIN: return <AdminDashboard user={user} />;
+        case UserRole.COACH: return <CoachDashboard user={user} />;
+        case UserRole.MEMBER: return <MemberDashboard user={user} />;
+        default: return <div>Unknown Role</div>;
       }
     }
 
     return (
-      <div className="flex flex-col items-center justify-center h-[50vh] text-viking-grey">
+      <div className="flex flex-col items-center justify-center h-[50vh] text-viking-grey animate-in fade-in">
         <Sword size={48} className="mb-4 opacity-20" />
         <p>This module is under construction.</p>
         <Button variant="ghost" onClick={() => setCurrentView('dashboard')} className="mt-4">Return Home</Button>
@@ -91,84 +79,113 @@ const App: React.FC = () => {
     );
   };
 
+  const handleMouseMove = (e: React.MouseEvent) => {
+    setMousePosition({ x: e.clientX, y: e.clientY });
+  };
+
+  // --- NEW LOGIN DESIGN (Full Screen with Torchlight) ---
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-viking-blue p-4 relative overflow-hidden">
-        {/* Background Effects */}
-        <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-           <div className="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] bg-viking-action/20 blur-[120px] rounded-full"></div>
-           <div className="absolute top-[40%] right-[10%] w-[30%] h-[30%] bg-white/5 blur-[100px] rounded-full"></div>
+      <div 
+        className="min-h-screen bg-viking-bgDark text-white relative overflow-hidden flex flex-col"
+        onMouseMove={handleMouseMove}
+      >
+        
+        {/* Background Layer: Blurred Logo */}
+        <div className="absolute inset-0 z-0 flex items-center justify-center overflow-hidden">
+             <img 
+               src="/viking-logo.png" 
+               alt="Background" 
+               className="w-[150%] max-w-none h-auto object-cover opacity-20 blur-3xl animate-pulse"
+               style={{ animationDuration: '8s' }}
+             />
         </div>
 
-        <div className="w-full max-w-md bg-white border border-white/10 rounded-3xl p-10 relative z-10 shadow-2xl">
-          <div className="text-center mb-10">
-            <div className="mb-6 flex justify-center">
-               <div className="relative">
-                  <div className="absolute inset-0 bg-viking-action blur-xl opacity-30 rounded-full"></div>
-                  {/* Note: Ensure the image file 'viking-logo.png' is placed in your public assets folder */}
-                  <img 
-                    src="/viking-logo.png" 
-                    alt="Viking Fitness Logo" 
-                    className="w-32 h-32 object-contain drop-shadow-2xl rounded-full relative z-10 bg-white" 
-                    onError={(e) => {
-                       e.currentTarget.style.display = 'none';
-                       e.currentTarget.nextElementSibling?.classList.remove('hidden');
-                    }}
-                  />
-                  <div className="hidden w-32 h-32 rounded-full bg-viking-blue flex items-center justify-center shadow-xl relative z-10">
-                      <Sword size={64} className="text-white" />
-                  </div>
-               </div>
-            </div>
-            <h1 className="text-4xl font-black text-viking-blue italic tracking-tighter mb-2 font-display">VIKING <span className="text-viking-action">FITNESS</span></h1>
-            <p className="text-viking-grey text-sm font-bold uppercase tracking-widest">Trainers for Everyone</p>
-          </div>
-
-          <form onSubmit={handleLogin} className="space-y-6">
-            <div>
-              <label className="block text-xs font-bold text-viking-grey uppercase tracking-widest mb-2">Access ID / Email</label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-viking-grey" size={18} />
-                <input 
-                  type="email" 
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-viking-offWhite border border-viking-grey/30 text-viking-blue p-3 pl-10 rounded-xl focus:outline-none focus:border-viking-action focus:ring-1 focus:ring-viking-action transition-all placeholder:text-slate-400 font-medium"
-                  placeholder="admin@hyper.com"
-                  required
-                />
+        {/* Torchlight Overlay - Reveals slightly more light around cursor */}
+        <div 
+            className="absolute inset-0 z-0 pointer-events-none"
+            style={{
+                background: `radial-gradient(800px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(13, 26, 196, 0.2), transparent 50%)`
+            }}
+        />
+        
+        {/* Content Wrapper */}
+        <div className="flex-1 flex flex-col justify-between p-8 relative z-10">
+           
+           {/* Header */}
+           <div className="pt-8 animate-in slide-in-from-top duration-700">
+              <div className="flex items-center gap-4 mb-6 group cursor-pointer w-fit">
+                 <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-white/20 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <img src="/viking-logo.png" className="w-full h-full object-cover" alt="Logo" />
+                    {/* Mini torchlight on logo hover */}
+                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/50 to-transparent -translate-x-full group-hover:animate-shimmer" />
+                 </div>
+                 <span className="font-black tracking-tighter text-lg">VIKING FITNESS</span>
               </div>
-            </div>
+           </div>
 
-            {error && <p className="text-red-500 text-xs text-center font-bold uppercase">{error}</p>}
+           {/* Hero Text */}
+           <div className="mb-auto mt-12 animate-in slide-in-from-left duration-700 delay-200">
+              <h1 className="text-5xl md:text-7xl font-black italic leading-[0.9] tracking-tighter mb-6 drop-shadow-2xl">
+                BE HEALTHY<br/>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-white/50">BE STRONGER</span><br/>
+                <span className="text-viking-action drop-shadow-[0_0_20px_rgba(13,26,196,0.8)]">BE YOURSELF</span>
+              </h1>
+              <p className="text-white/60 max-w-xs leading-relaxed font-medium backdrop-blur-sm bg-black/10 p-2 rounded-lg">
+                Join the elite community of high-performance athletes. Your journey to Valhalla starts now.
+              </p>
+           </div>
 
-            <Button type="button" fullWidth variant="primary" onClick={handleLogin} disabled={loading} className="h-14 text-lg shadow-xl">
-              {loading ? 'Authenticating...' : 'Enter Valhalla'}
-            </Button>
-          </form>
+           {/* Login Form (Bottom Anchored) */}
+           <div className="space-y-4 w-full max-w-md mx-auto animate-in slide-in-from-bottom duration-700 delay-300">
+              {error && <div className="p-3 bg-red-500/20 border border-red-500/50 rounded-xl text-red-200 text-xs font-bold text-center animate-in zoom-in">{error}</div>}
+              
+              <div className="bg-white/10 backdrop-blur-xl border border-white/10 rounded-[2rem] p-2 flex items-center shadow-2xl group focus-within:ring-2 focus-within:ring-viking-action/50 transition-all">
+                 <div className="w-12 h-12 flex items-center justify-center text-white/50">
+                    <Lock size={20} />
+                 </div>
+                 <input 
+                    type="email" 
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter Access ID / Email"
+                    className="bg-transparent border-none outline-none text-white placeholder:text-white/30 w-full h-12 font-bold px-2"
+                 />
+                 <button 
+                   onClick={handleLogin}
+                   className="h-12 px-8 rounded-full bg-viking-action text-white font-black uppercase tracking-wider hover:bg-white hover:text-viking-action transition-all shadow-[0_8px_30px_rgba(13,26,196,0.4)] backdrop-blur-md border border-white/10 hover:scale-105 active:scale-95"
+                 >
+                   {loading ? '...' : 'GO'}
+                 </button>
+              </div>
 
-          <div className="mt-10 pt-6 border-t border-viking-grey/10">
-            <p className="text-xs text-center text-viking-grey mb-4 font-bold uppercase tracking-wider">Demo Credentials</p>
-            <div className="flex justify-between gap-3 text-xs">
-              <button onClick={() => setEmail('admin@hyper.com')} className="flex-1 py-3 bg-viking-offWhite hover:bg-viking-action/10 border border-viking-grey/20 text-viking-grey hover:text-viking-action transition-colors font-bold uppercase rounded-lg">Admin</button>
-              <button onClick={() => setEmail('jax@hyper.com')} className="flex-1 py-3 bg-viking-offWhite hover:bg-viking-action/10 border border-viking-grey/20 text-viking-grey hover:text-viking-action transition-colors font-bold uppercase rounded-lg">Coach</button>
-              <button onClick={() => setEmail('johnny@gmail.com')} className="flex-1 py-3 bg-viking-offWhite hover:bg-viking-action/10 border border-viking-grey/20 text-viking-grey hover:text-viking-action transition-colors font-bold uppercase rounded-lg">Member</button>
-            </div>
-          </div>
+              {/* Demo Pills */}
+              <div className="flex justify-center gap-3 pt-4 overflow-x-auto pb-2 no-scrollbar">
+                 <button onClick={() => setEmail('johnny@gmail.com')} className="px-4 py-2 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm text-xs font-bold hover:bg-white hover:text-viking-action transition-colors whitespace-nowrap">Member Demo</button>
+                 <button onClick={() => setEmail('jax@hyper.com')} className="px-4 py-2 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm text-xs font-bold hover:bg-white hover:text-viking-action transition-colors whitespace-nowrap">Coach Demo</button>
+                 <button onClick={() => setEmail('admin@hyper.com')} className="px-4 py-2 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm text-xs font-bold hover:bg-white hover:text-viking-action transition-colors whitespace-nowrap">Admin Demo</button>
+              </div>
+           </div>
         </div>
       </div>
     );
   }
 
+  // --- MAIN APP LAYOUT ---
   return (
-    <div className="min-h-screen bg-viking-offWhite dark:bg-viking-blue text-viking-blue dark:text-white flex transition-colors duration-300">
+    <div className="min-h-screen bg-viking-bgLight dark:bg-viking-bgDark text-viking-textLight dark:text-viking-textDark flex transition-colors duration-300 font-sans">
       <Navigation 
         user={user} 
         onLogout={handleLogout} 
         currentView={currentView}
         onChangeView={setCurrentView}
       />
-      <main className="flex-1 ml-64 p-8">
+      {/* 
+         Layout logic: 
+         Desktop: ml-72 for sidebar, p-8
+         Mobile: pb-28 for bottom nav, pt-24 for top bar (or just spacing), px-6
+      */}
+      <main className="flex-1 w-full md:ml-72 p-6 md:p-8 pt-24 md:pt-8 pb-32 md:pb-8">
         <div className="max-w-7xl mx-auto">
           {renderDashboard()}
         </div>

@@ -1,3 +1,4 @@
+
 export enum UserRole {
   ADMIN = 'ADMIN',
   COACH = 'COACH',
@@ -46,6 +47,14 @@ export interface BodyLog {
   weight: number;
   photoUrl?: string; // Firebase Storage URL
   bodyFatPercentage?: number;
+}
+
+export interface LeaderboardEntry {
+    userId: string;
+    name: string;
+    avatarUrl: string;
+    fatLossPercentage: number; // Total % lost
+    rank: number;
 }
 
 export interface Appointment {

@@ -4,9 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Viking Fitness | Trainers for Everyone</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -15,22 +12,44 @@
           extend: {
             colors: {
               viking: {
-                blue: '#132436',      // Main Anchor (Dark Blue)
-                blueLight: '#1E344D', // Lighter Navy for cards in Dark Mode
-                action: '#0057B8',    // Action Blue
-                white: '#FFFFFF',     // Crisp White
-                offWhite: '#F8FAFC',  // Slate 50 (Light Mode BG)
-                grey: '#94A3B8',      // Slate 400 (Muted Text)
+                // Light Mode
+                bgLight: '#FFFFFF',      // Pure White
+                surfaceLight: '#F4F7FF', // Very Pale Blue (Cards)
+                
+                // Dark Mode
+                bgDark: '#132436',       // Viking Deep Blue (Background)
+                surfaceDark: '#1E2D3E',  // Dark Slate Blue (Cards)
+                
+                // Shared
+                action: '#0D1AC4',       // Viking Blue (Buttons/Links)
+                textLight: '#132436',    // Deep Blue (Text in Light Mode)
+                textDark: '#FFFFFF',     // White (Text in Dark Mode)
+                accent: '#FFB800',       // Gold (Alerts/Highlights)
+                
+                // Legacy mapping for existing components
+                blue: '#132436',      
+                blueLight: '#1E2D3E', 
+                offWhite: '#F4F7FF',  
+                grey: '#94A3B8',      
               }
             },
             fontFamily: {
-              sans: ['Open Sans', 'system-ui', 'sans-serif'],
-              display: ['Montserrat', 'sans-serif'],
-              mono: ['JetBrains Mono', 'monospace'],
+              sans: ['Helvetica', 'Arial', 'sans-serif'],
+              display: ['Helvetica', 'Arial', 'sans-serif'],
+              mono: ['Courier New', 'monospace'],
             },
             borderRadius: {
               '3xl': '1.5rem',
               '4xl': '2rem',
+            },
+            animation: {
+              shimmer: 'shimmer 2s infinite',
+            },
+            keyframes: {
+              shimmer: {
+                '0%': { transform: 'translateX(-150%) skewX(-15deg)' },
+                '100%': { transform: 'translateX(150%) skewX(-15deg)' },
+              }
             }
           }
         }
@@ -38,10 +57,11 @@
     </script>
     <style>
       body {
-        font-family: 'Open Sans', sans-serif;
+        font-family: 'Helvetica', 'Arial', sans-serif;
       }
       h1, h2, h3, h4, h5, h6 {
-        font-family: 'Montserrat', sans-serif;
+        font-family: 'Helvetica', 'Arial', sans-serif;
+        letter-spacing: -0.02em;
       }
       /* Custom Scrollbar */
       ::-webkit-scrollbar {
@@ -55,7 +75,7 @@
         border-radius: 3px;
       }
       ::-webkit-scrollbar-thumb:hover {
-        background: #0057B8; 
+        background: #0D1AC4; 
       }
     </style>
   <script type="importmap">
@@ -71,7 +91,7 @@
 }
 </script>
 </head>
-  <body class="bg-viking-offWhite text-viking-blue dark:bg-viking-blue dark:text-viking-white transition-colors duration-300">
+  <body class="bg-viking-bgLight text-viking-textLight dark:bg-viking-bgDark dark:text-viking-textDark transition-colors duration-300">
     <div id="root"></div>
   </body>
 </html>

@@ -77,15 +77,15 @@ export const BodyTracker: React.FC<BodyTrackerProps> = ({ user }) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-500">
-      <div className="border-b border-viking-grey/10 pb-4">
+    <div className="max-w-4xl mx-auto space-y-8 pb-20">
+      <div className="border-b border-viking-grey/10 pb-4 animate-in slide-in-from-top duration-500">
         <h2 className="text-3xl font-black text-viking-blue dark:text-white uppercase tracking-tight font-display">Body Index</h2>
         <p className="text-viking-grey text-sm font-medium">Track your transformation metrics</p>
       </div>
 
       {/* Stats Input */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card title="Current Metrics">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-in slide-in-from-bottom duration-500 delay-100">
+        <Card title="Current Metrics" className="shadow-lg">
           <div className="space-y-4">
             <div>
               <label className="block text-xs font-bold text-viking-grey uppercase tracking-wider mb-2">Weight (lbs)</label>
@@ -115,10 +115,10 @@ export const BodyTracker: React.FC<BodyTrackerProps> = ({ user }) => {
           </div>
         </Card>
 
-        <Card title="History Log">
-          <div className="h-56 overflow-y-auto space-y-2 pr-2">
+        <Card title="History Log" className="shadow-lg">
+          <div className="h-56 overflow-y-auto space-y-2 pr-2 custom-scrollbar">
              {logs.map(log => (
-               <div key={log.id} className="flex justify-between items-center p-3 bg-viking-offWhite dark:bg-viking-blue border border-viking-grey/10 hover:border-viking-action/30 transition-colors rounded-lg">
+               <div key={log.id} className="flex justify-between items-center p-3 bg-viking-offWhite dark:bg-viking-blue border border-viking-grey/10 hover:border-viking-action/30 transition-colors rounded-2xl hover:bg-white dark:hover:bg-white/5">
                  <span className="text-viking-grey text-sm font-medium">{new Date(log.date).toLocaleDateString()}</span>
                  <div className="flex gap-4">
                    <span className="text-viking-blue dark:text-white font-mono font-bold">{log.weight} lbs</span>
@@ -132,9 +132,11 @@ export const BodyTracker: React.FC<BodyTrackerProps> = ({ user }) => {
       </div>
 
       {/* Transformation Tool */}
-      <div className="border-t border-viking-grey/10 pt-8">
+      <div className="border-t border-viking-grey/10 pt-8 animate-in slide-in-from-bottom duration-500 delay-200">
          <div className="flex items-center gap-3 mb-6">
-           <BrainCircuit className="text-viking-action" size={24} />
+           <div className="p-2 bg-viking-action/10 rounded-full text-viking-action">
+             <BrainCircuit size={24} />
+           </div>
            <h3 className="text-2xl font-black text-viking-blue dark:text-white uppercase font-display">Transformation AI</h3>
          </div>
          
@@ -142,11 +144,11 @@ export const BodyTracker: React.FC<BodyTrackerProps> = ({ user }) => {
             {/* Before Photo */}
             <div className="space-y-3">
               <p className="text-xs text-center text-viking-grey uppercase font-bold tracking-widest">Before</p>
-              <div className="aspect-[3/4] bg-viking-offWhite dark:bg-viking-blue border-2 border-dashed border-viking-grey/30 flex flex-col items-center justify-center overflow-hidden relative group hover:border-viking-action transition-colors rounded-2xl">
+              <div className="aspect-[3/4] bg-viking-offWhite dark:bg-viking-blue border-2 border-dashed border-viking-grey/30 flex flex-col items-center justify-center overflow-hidden relative group hover:border-viking-action transition-all rounded-[2rem] hover:shadow-lg">
                 {beforeImage ? (
                   <img src={beforeImage} className="w-full h-full object-cover" alt="Before" />
                 ) : (
-                  <div className="text-center p-6">
+                  <div className="text-center p-6 group-hover:scale-110 transition-transform">
                     <Upload className="mx-auto text-viking-grey mb-2" />
                     <span className="text-viking-grey text-xs font-bold uppercase">Upload Photo</span>
                   </div>
@@ -158,11 +160,11 @@ export const BodyTracker: React.FC<BodyTrackerProps> = ({ user }) => {
             {/* After Photo */}
             <div className="space-y-3">
               <p className="text-xs text-center text-viking-grey uppercase font-bold tracking-widest">After</p>
-              <div className="aspect-[3/4] bg-viking-offWhite dark:bg-viking-blue border-2 border-dashed border-viking-grey/30 flex flex-col items-center justify-center overflow-hidden relative group hover:border-viking-action transition-colors rounded-2xl">
+              <div className="aspect-[3/4] bg-viking-offWhite dark:bg-viking-blue border-2 border-dashed border-viking-grey/30 flex flex-col items-center justify-center overflow-hidden relative group hover:border-viking-action transition-all rounded-[2rem] hover:shadow-lg">
                  {afterImage ? (
                   <img src={afterImage} className="w-full h-full object-cover" alt="After" />
                 ) : (
-                  <div className="text-center p-6">
+                  <div className="text-center p-6 group-hover:scale-110 transition-transform">
                     <Upload className="mx-auto text-viking-grey mb-2" />
                     <span className="text-viking-grey text-xs font-bold uppercase">Upload Photo</span>
                   </div>
@@ -174,7 +176,7 @@ export const BodyTracker: React.FC<BodyTrackerProps> = ({ user }) => {
 
          <div className="mt-8 flex justify-center">
             {generatedCaption ? (
-              <div className="w-full bg-white dark:bg-viking-blue p-8 border-l-4 border-l-viking-action shadow-lg animate-in zoom-in duration-300 rounded-r-2xl">
+              <div className="w-full bg-white dark:bg-viking-blue p-8 border-l-4 border-l-viking-action shadow-xl animate-in zoom-in duration-300 rounded-r-[2rem]">
                 <Sparkles className="mx-auto text-viking-action mb-4" size={32} />
                 <p className="text-xl font-bold italic text-viking-blue dark:text-white leading-relaxed font-display text-center">"{generatedCaption}"</p>
                 <div className="text-center mt-6">
@@ -186,7 +188,7 @@ export const BodyTracker: React.FC<BodyTrackerProps> = ({ user }) => {
                 size="lg" 
                 disabled={!afterImage || isGenerating} 
                 onClick={analyzeTransformation}
-                className="bg-viking-action text-white hover:bg-blue-700 shadow-xl"
+                className="bg-viking-action text-white hover:bg-blue-700 shadow-xl shadow-viking-action/30"
                >
                  {isGenerating ? (
                    <span className="flex items-center gap-2">

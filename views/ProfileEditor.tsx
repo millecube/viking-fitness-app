@@ -32,75 +32,79 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ user, onUpdateUser
     };
 
     return (
-        <div className="max-w-2xl mx-auto space-y-6 animate-in fade-in duration-500">
-            <div>
+        <div className="max-w-2xl mx-auto space-y-6">
+            <div className="animate-in slide-in-from-top duration-500">
                 <h2 className="text-3xl font-black text-viking-blue dark:text-white uppercase tracking-tight font-display">Edit Profile</h2>
                 <p className="text-viking-grey text-sm font-medium">Update your personal details</p>
             </div>
 
-            <Card title="User Information">
-                <form onSubmit={handleSave} className="space-y-6">
-                    <div className="flex items-center gap-6">
-                         <img 
-                            src={avatarUrl || 'https://via.placeholder.com/150'} 
-                            alt="Preview" 
-                            className="w-24 h-24 rounded-full object-cover border-4 border-viking-action"
-                         />
-                         <div className="flex-1">
-                             <label className="block text-xs font-bold text-viking-grey uppercase tracking-wider mb-2">Avatar URL</label>
-                             <input 
+            <div className="animate-in slide-in-from-bottom duration-500 delay-100">
+                <Card title="User Information" className="shadow-lg">
+                    <form onSubmit={handleSave} className="space-y-6">
+                        <div className="flex items-center gap-6">
+                             <div className="relative group">
+                                <img 
+                                    src={avatarUrl || 'https://via.placeholder.com/150'} 
+                                    alt="Preview" 
+                                    className="w-24 h-24 rounded-full object-cover border-4 border-viking-action shadow-md group-hover:scale-105 transition-transform"
+                                />
+                             </div>
+                             <div className="flex-1">
+                                 <label className="block text-xs font-bold text-viking-grey uppercase tracking-wider mb-2">Avatar URL</label>
+                                 <input 
+                                    type="text"
+                                    value={avatarUrl}
+                                    onChange={(e) => setAvatarUrl(e.target.value)}
+                                    className="w-full bg-viking-offWhite dark:bg-viking-blue border border-viking-grey/20 text-viking-blue dark:text-white p-3 rounded-xl focus:border-viking-action focus:outline-none transition-colors"
+                                    placeholder="https://..."
+                                 />
+                             </div>
+                        </div>
+
+                        <div>
+                            <label className="block text-xs font-bold text-viking-grey uppercase tracking-wider mb-2">Full Name</label>
+                            <input 
                                 type="text"
-                                value={avatarUrl}
-                                onChange={(e) => setAvatarUrl(e.target.value)}
-                                className="w-full bg-viking-offWhite dark:bg-viking-blue border border-viking-grey/20 text-viking-blue dark:text-white p-3 rounded-xl focus:border-viking-action focus:outline-none transition-colors"
-                                placeholder="https://..."
-                             />
-                         </div>
-                    </div>
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                className="w-full bg-viking-offWhite dark:bg-viking-blue border border-viking-grey/20 text-viking-blue dark:text-white p-3 rounded-xl focus:border-viking-action focus:outline-none transition-colors font-bold"
+                            />
+                        </div>
 
-                    <div>
-                        <label className="block text-xs font-bold text-viking-grey uppercase tracking-wider mb-2">Full Name</label>
-                        <input 
-                            type="text"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            className="w-full bg-viking-offWhite dark:bg-viking-blue border border-viking-grey/20 text-viking-blue dark:text-white p-3 rounded-xl focus:border-viking-action focus:outline-none transition-colors font-bold"
-                        />
-                    </div>
+                        <div>
+                            <label className="block text-xs font-bold text-viking-grey uppercase tracking-wider mb-2">Email Address (Read Only)</label>
+                            <input 
+                                type="email"
+                                value={user.email}
+                                disabled
+                                className="w-full bg-viking-offWhite dark:bg-viking-blue/50 border border-viking-grey/20 text-viking-grey p-3 rounded-xl cursor-not-allowed"
+                            />
+                        </div>
 
-                    <div>
-                        <label className="block text-xs font-bold text-viking-grey uppercase tracking-wider mb-2">Email Address (Read Only)</label>
-                        <input 
-                            type="email"
-                            value={user.email}
-                            disabled
-                            className="w-full bg-viking-offWhite dark:bg-viking-blue/50 border border-viking-grey/20 text-viking-grey p-3 rounded-xl cursor-not-allowed"
-                        />
-                    </div>
+                         <div>
+                            <label className="block text-xs font-bold text-viking-grey uppercase tracking-wider mb-2">Branch ID</label>
+                            <input 
+                                type="text"
+                                value={user.branchId}
+                                disabled
+                                className="w-full bg-viking-offWhite dark:bg-viking-blue/50 border border-viking-grey/20 text-viking-grey p-3 rounded-xl cursor-not-allowed font-mono"
+                            />
+                        </div>
 
-                     <div>
-                        <label className="block text-xs font-bold text-viking-grey uppercase tracking-wider mb-2">Branch ID</label>
-                        <input 
-                            type="text"
-                            value={user.branchId}
-                            disabled
-                            className="w-full bg-viking-offWhite dark:bg-viking-blue/50 border border-viking-grey/20 text-viking-grey p-3 rounded-xl cursor-not-allowed font-mono"
-                        />
-                    </div>
+                        {message && (
+                            <p className={`text-sm font-bold animate-in fade-in ${message.includes('success') ? 'text-green-500' : 'text-red-500'}`}>
+                                {message}
+                            </p>
+                        )}
 
-                    {message && (
-                        <p className={`text-sm font-bold ${message.includes('success') ? 'text-green-500' : 'text-red-500'}`}>
-                            {message}
-                        </p>
-                    )}
-
-                    <div className="pt-4 border-t border-viking-grey/10 flex justify-end">
-                        <Button type="submit" disabled={loading}>
-                            {loading ? 'Saving...' : <><Save size={18} className="mr-2"/> Save Changes</>}
-                        </Button>
-                    </div>
-                </form>
-            </Card>
+                        <div className="pt-4 border-t border-viking-grey/10 flex justify-end">
+                            <Button type="submit" disabled={loading} className="shadow-lg">
+                                {loading ? 'Saving...' : <><Save size={18} className="mr-2"/> Save Changes</>}
+                            </Button>
+                        </div>
+                    </form>
+                </Card>
+            </div>
         </div>
     );
 };

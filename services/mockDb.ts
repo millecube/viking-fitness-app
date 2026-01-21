@@ -1,4 +1,5 @@
-import { Branch, User, UserRole, WorkoutSession, Appointment, CommunityPost, BodyLog } from '../types';
+
+import { Branch, User, UserRole, WorkoutSession, Appointment, CommunityPost, BodyLog, LeaderboardEntry } from '../types';
 
 // === INITIAL DATA SEEDING ===
 
@@ -10,9 +11,10 @@ const INITIAL_BRANCHES: Branch[] = [
 const INITIAL_USERS: User[] = [
   { id: 'u_admin_1', name: 'Zeus Commander', email: 'admin@hyper.com', role: UserRole.ADMIN, branchId: 'b_nyc_01', avatarUrl: 'https://picsum.photos/seed/admin1/150/150', points: 0, streakDays: 0 },
   { id: 'u_coach_1', name: 'Jax Briggs', email: 'jax@hyper.com', role: UserRole.COACH, branchId: 'b_nyc_01', avatarUrl: 'https://picsum.photos/seed/coach1/150/150', points: 0, streakDays: 0 },
-  { id: 'u_mem_1', name: 'Johnny Cage', email: 'johnny@gmail.com', role: UserRole.MEMBER, branchId: 'b_nyc_01', assignedCoachId: 'u_coach_1', avatarUrl: 'https://picsum.photos/seed/mem1/150/150', points: 2450, streakDays: 12 },
-  { id: 'u_mem_2', name: 'Liu Kang', email: 'liu@gmail.com', role: UserRole.MEMBER, branchId: 'b_nyc_01', assignedCoachId: 'u_coach_1', avatarUrl: 'https://picsum.photos/seed/mem2/150/150', points: 3100, streakDays: 24 },
-  { id: 'u_mem_3', name: 'Kung Lao', email: 'kung@gmail.com', role: UserRole.MEMBER, branchId: 'b_la_01', assignedCoachId: 'u_coach_2', avatarUrl: 'https://picsum.photos/seed/mem3/150/150', points: 1200, streakDays: 3 },
+  { id: 'u_mem_1', name: 'Johnny Cage', email: 'johnny@gmail.com', role: UserRole.MEMBER, branchId: 'b_nyc_01', assignedCoachId: 'u_coach_1', avatarUrl: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=400&auto=format&fit=crop&q=60', points: 2450, streakDays: 12 },
+  { id: 'u_mem_2', name: 'Liu Kang', email: 'liu@gmail.com', role: UserRole.MEMBER, branchId: 'b_nyc_01', assignedCoachId: 'u_coach_1', avatarUrl: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&auto=format&fit=crop&q=60', points: 3100, streakDays: 24 },
+  { id: 'u_mem_3', name: 'Kung Lao', email: 'kung@gmail.com', role: UserRole.MEMBER, branchId: 'b_la_01', assignedCoachId: 'u_coach_2', avatarUrl: 'https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=400&auto=format&fit=crop&q=60', points: 1200, streakDays: 3 },
+  { id: 'u_mem_4', name: 'Sonya Blade', email: 'sonya@gmail.com', role: UserRole.MEMBER, branchId: 'b_nyc_01', assignedCoachId: 'u_coach_1', avatarUrl: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&auto=format&fit=crop&q=60', points: 4100, streakDays: 45 },
 ];
 
 const INITIAL_WORKOUTS: WorkoutSession[] = [
@@ -28,7 +30,11 @@ const INITIAL_POSTS: CommunityPost[] = [
 ];
 
 const INITIAL_BODY_LOGS: BodyLog[] = [
-  { id: 'bl_1', userId: 'u_mem_1', branchId: 'b_nyc_01', date: new Date(Date.now() - 86400000 * 30).toISOString(), weight: 185, bodyFatPercentage: 15 },
+  { id: 'bl_1', userId: 'u_mem_1', branchId: 'b_nyc_01', date: new Date(Date.now() - 86400000 * 30).toISOString(), weight: 185, bodyFatPercentage: 18 },
+  { id: 'bl_2', userId: 'u_mem_1', branchId: 'b_nyc_01', date: new Date().toISOString(), weight: 180, bodyFatPercentage: 15 }, // Lost 3%
+  { id: 'bl_3', userId: 'u_mem_4', branchId: 'b_nyc_01', date: new Date(Date.now() - 86400000 * 60).toISOString(), weight: 140, bodyFatPercentage: 24 },
+  { id: 'bl_4', userId: 'u_mem_4', branchId: 'b_nyc_01', date: new Date().toISOString(), weight: 135, bodyFatPercentage: 19 }, // Lost 5%
+  { id: 'bl_5', userId: 'u_mem_2', branchId: 'b_nyc_01', date: new Date().toISOString(), weight: 175, bodyFatPercentage: 12 }, // Maintenance
 ];
 
 const DB_KEYS = {
@@ -133,7 +139,25 @@ class MockDatabase {
     if (currentUser.role === UserRole.COACH) {
       return allWorkouts.filter(w => w.branchId === currentUser.branchId);
     }
-    return allWorkouts.filter(w => w.userId === currentUser.id);
+    return allWorkouts.filter(w => w.userId === currentUser.id).sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  }
+
+  async addWorkout(workout: WorkoutSession): Promise<void> {
+      await delay(400);
+      const workouts = this.get<WorkoutSession>(DB_KEYS.WORKOUTS);
+      workouts.unshift(workout);
+      this.set(DB_KEYS.WORKOUTS, workouts);
+
+      // Update User Points
+      const users = this.get<User>(DB_KEYS.USERS);
+      const userIndex = users.findIndex(u => u.id === workout.userId);
+      if(userIndex !== -1) {
+          users[userIndex].points += workout.xpEarned;
+          // Simple streak logic: if workout date is today/yesterday relative to last workout, increment or maintain
+          // For Mock, just increment
+          users[userIndex].streakDays += 1;
+          this.set(DB_KEYS.USERS, users);
+      }
   }
 
   // === COMMUNITY POSTS ===
@@ -163,6 +187,41 @@ class MockDatabase {
     const logs = this.get<BodyLog>(DB_KEYS.BODY_LOGS);
     logs.unshift(log);
     this.set(DB_KEYS.BODY_LOGS, logs);
+  }
+
+  // === LEADERBOARD (FAT LOSS) ===
+  async getFatLossLeaderboard(branchId: string): Promise<LeaderboardEntry[]> {
+    await delay(600); // Simulate calculation
+    const users = this.get<User>(DB_KEYS.USERS).filter(u => u.branchId === branchId && u.role === UserRole.MEMBER);
+    const logs = this.get<BodyLog>(DB_KEYS.BODY_LOGS);
+
+    const leaderboard: LeaderboardEntry[] = [];
+
+    users.forEach(user => {
+        const userLogs = logs.filter(l => l.userId === user.id).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+        if (userLogs.length >= 2) {
+            const first = userLogs[0];
+            const last = userLogs[userLogs.length - 1];
+            if (first.bodyFatPercentage && last.bodyFatPercentage) {
+                const diff = first.bodyFatPercentage - last.bodyFatPercentage;
+                if (diff > 0) { // Only count positive loss
+                    leaderboard.push({
+                        userId: user.id,
+                        name: user.name,
+                        avatarUrl: user.avatarUrl || 'https://via.placeholder.com/150',
+                        fatLossPercentage: parseFloat(diff.toFixed(1)),
+                        rank: 0
+                    });
+                }
+            }
+        }
+    });
+
+    // Sort by fat loss desc
+    leaderboard.sort((a, b) => b.fatLossPercentage - a.fatLossPercentage);
+    
+    // Assign Rank
+    return leaderboard.map((entry, index) => ({ ...entry, rank: index + 1 }));
   }
 
   // === APPOINTMENTS ===
