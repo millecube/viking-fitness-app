@@ -14,18 +14,13 @@
         theme: {
           extend: {
             colors: {
-              fitness: {
-                black: '#121212',     // Matte Black background
-                darkGreen: '#064E3B', // Deep Emerald for cards
-                lime: '#D2F665',      // Bright Lime accent
-                white: '#FFFFFF',
-                offWhite: '#F3F4F6',  // Light grey background
-                textMain: '#111827',
-                textMuted: '#6B7280',
-                
-                // Legacy mapping for other views if needed
-                navy: '#132436',    
-                action: '#0057B8',
+              viking: {
+                blue: '#132436',      // Main Anchor (Dark Blue)
+                blueLight: '#1E344D', // Lighter Navy for cards in Dark Mode
+                action: '#0057B8',    // Action Blue
+                white: '#FFFFFF',     // Crisp White
+                offWhite: '#F8FAFC',  // Slate 50 (Light Mode BG)
+                grey: '#94A3B8',      // Slate 400 (Muted Text)
               }
             },
             fontFamily: {
@@ -44,7 +39,6 @@
     <style>
       body {
         font-family: 'Open Sans', sans-serif;
-        background-color: #F3F4F6; /* fitness-offWhite */
       }
       h1, h2, h3, h4, h5, h6 {
         font-family: 'Montserrat', sans-serif;
@@ -57,15 +51,11 @@
         background: transparent; 
       }
       ::-webkit-scrollbar-thumb {
-        background: #D1D5DB; 
+        background: #94A3B8; 
         border-radius: 3px;
       }
       ::-webkit-scrollbar-thumb:hover {
-        background: #9CA3AF; 
-      }
-      
-      .dark body {
-        background-color: #121212;
+        background: #0057B8; 
       }
     </style>
   <script type="importmap">
@@ -81,7 +71,7 @@
 }
 </script>
 </head>
-  <body class="bg-fitness-offWhite text-fitness-textMain dark:bg-fitness-black dark:text-fitness-white transition-colors duration-300">
+  <body class="bg-viking-offWhite text-viking-blue dark:bg-viking-blue dark:text-viking-white transition-colors duration-300">
     <div id="root"></div>
   </body>
 </html>

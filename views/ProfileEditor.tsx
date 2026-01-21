@@ -34,8 +34,8 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ user, onUpdateUser
     return (
         <div className="max-w-2xl mx-auto space-y-6 animate-in fade-in duration-500">
             <div>
-                <h2 className="text-3xl font-black text-viking-navy dark:text-white uppercase tracking-tight font-display">Edit Profile</h2>
-                <p className="text-slate-500 dark:text-viking-grey text-sm font-medium">Update your personal details</p>
+                <h2 className="text-3xl font-black text-viking-blue dark:text-white uppercase tracking-tight font-display">Edit Profile</h2>
+                <p className="text-viking-grey text-sm font-medium">Update your personal details</p>
             </div>
 
             <Card title="User Information">
@@ -47,44 +47,44 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ user, onUpdateUser
                             className="w-24 h-24 rounded-full object-cover border-4 border-viking-action"
                          />
                          <div className="flex-1">
-                             <label className="block text-xs font-bold text-slate-500 dark:text-viking-grey uppercase tracking-wider mb-2">Avatar URL</label>
+                             <label className="block text-xs font-bold text-viking-grey uppercase tracking-wider mb-2">Avatar URL</label>
                              <input 
                                 type="text"
                                 value={avatarUrl}
                                 onChange={(e) => setAvatarUrl(e.target.value)}
-                                className="w-full bg-slate-50 dark:bg-viking-navyLight border border-slate-200 dark:border-viking-navyLight text-viking-navy dark:text-white p-3 rounded focus:border-viking-action focus:outline-none transition-colors"
+                                className="w-full bg-viking-offWhite dark:bg-viking-blue border border-viking-grey/20 text-viking-blue dark:text-white p-3 rounded-xl focus:border-viking-action focus:outline-none transition-colors"
                                 placeholder="https://..."
                              />
                          </div>
                     </div>
 
                     <div>
-                        <label className="block text-xs font-bold text-slate-500 dark:text-viking-grey uppercase tracking-wider mb-2">Full Name</label>
+                        <label className="block text-xs font-bold text-viking-grey uppercase tracking-wider mb-2">Full Name</label>
                         <input 
                             type="text"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            className="w-full bg-slate-50 dark:bg-viking-navyLight border border-slate-200 dark:border-viking-navyLight text-viking-navy dark:text-white p-3 rounded focus:border-viking-action focus:outline-none transition-colors font-bold"
+                            className="w-full bg-viking-offWhite dark:bg-viking-blue border border-viking-grey/20 text-viking-blue dark:text-white p-3 rounded-xl focus:border-viking-action focus:outline-none transition-colors font-bold"
                         />
                     </div>
 
                     <div>
-                        <label className="block text-xs font-bold text-slate-500 dark:text-viking-grey uppercase tracking-wider mb-2">Email Address (Read Only)</label>
+                        <label className="block text-xs font-bold text-viking-grey uppercase tracking-wider mb-2">Email Address (Read Only)</label>
                         <input 
                             type="email"
                             value={user.email}
                             disabled
-                            className="w-full bg-slate-100 dark:bg-viking-navy/50 border border-slate-200 dark:border-viking-navyLight text-slate-500 dark:text-viking-grey p-3 rounded cursor-not-allowed"
+                            className="w-full bg-viking-offWhite dark:bg-viking-blue/50 border border-viking-grey/20 text-viking-grey p-3 rounded-xl cursor-not-allowed"
                         />
                     </div>
 
                      <div>
-                        <label className="block text-xs font-bold text-slate-500 dark:text-viking-grey uppercase tracking-wider mb-2">Branch ID</label>
+                        <label className="block text-xs font-bold text-viking-grey uppercase tracking-wider mb-2">Branch ID</label>
                         <input 
                             type="text"
                             value={user.branchId}
                             disabled
-                            className="w-full bg-slate-100 dark:bg-viking-navy/50 border border-slate-200 dark:border-viking-navyLight text-slate-500 dark:text-viking-grey p-3 rounded cursor-not-allowed font-mono"
+                            className="w-full bg-viking-offWhite dark:bg-viking-blue/50 border border-viking-grey/20 text-viking-grey p-3 rounded-xl cursor-not-allowed font-mono"
                         />
                     </div>
 
@@ -94,7 +94,7 @@ export const ProfileEditor: React.FC<ProfileEditorProps> = ({ user, onUpdateUser
                         </p>
                     )}
 
-                    <div className="pt-4 border-t border-slate-200 dark:border-viking-navyLight flex justify-end">
+                    <div className="pt-4 border-t border-viking-grey/10 flex justify-end">
                         <Button type="submit" disabled={loading}>
                             {loading ? 'Saving...' : <><Save size={18} className="mr-2"/> Save Changes</>}
                         </Button>

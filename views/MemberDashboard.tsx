@@ -21,12 +21,12 @@ export const MemberDashboard: React.FC<MemberDashboardProps> = ({ user }) => {
     loadData();
   }, [user]);
 
-  // Mock Data for Heart Rate Chart to match image
+  // Mock Data for Heart Rate Chart
   const heartRateData = [
     { name: '10', val: 40 },
     { name: '12', val: 70 },
     { name: '14', val: 50 },
-    { name: '16', val: 80 }, // Highlighted
+    { name: '16', val: 80 },
     { name: '18', val: 60 },
     { name: '20', val: 30 },
     { name: '22', val: 55 },
@@ -37,10 +37,10 @@ export const MemberDashboard: React.FC<MemberDashboardProps> = ({ user }) => {
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <div>
-           <p className="text-fitness-textMuted text-sm font-semibold">Good Morning</p>
-           <h1 className="text-3xl font-bold text-fitness-textMain dark:text-white font-display">{user.name}</h1>
+           <p className="text-viking-grey text-sm font-semibold">Good Morning</p>
+           <h1 className="text-3xl font-bold text-viking-blue dark:text-white font-display">{user.name}</h1>
         </div>
-        <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white shadow-lg">
+        <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-viking-action shadow-lg">
            <img src={user.avatarUrl} alt="Profile" className="w-full h-full object-cover" />
         </div>
       </div>
@@ -49,15 +49,20 @@ export const MemberDashboard: React.FC<MemberDashboardProps> = ({ user }) => {
         
         {/* Left Col: Heart Rate Zone */}
         <div className="space-y-6">
-           <Card variant="dark" className="relative h-[420px]" title="Target Heart Rate Zone">
+            {/* 
+                Visual Logic:
+                Light Mode: White Card, Dark Text, Blue Chart.
+                Dark Mode: Blue Card, White Text, White Chart.
+            */}
+           <Card className="relative h-[420px]" title="Target Heart Rate Zone">
               <div className="flex gap-4 mb-6">
                  <div className="flex items-center gap-2">
-                    <span className="w-3 h-3 rounded-full bg-fitness-lime"></span>
-                    <span className="text-xs text-zinc-400">Below zones</span>
+                    <span className="w-3 h-3 rounded-full bg-viking-action"></span>
+                    <span className="text-xs text-viking-grey">Below zones</span>
                  </div>
                  <div className="flex items-center gap-2">
-                    <span className="w-3 h-3 rounded-full bg-white"></span>
-                    <span className="text-xs text-zinc-400">Fat Burn</span>
+                    <span className="w-3 h-3 rounded-full bg-viking-blue dark:bg-white"></span>
+                    <span className="text-xs text-viking-grey">Fat Burn</span>
                  </div>
               </div>
 
@@ -68,26 +73,40 @@ export const MemberDashboard: React.FC<MemberDashboardProps> = ({ user }) => {
                           dataKey="name" 
                           axisLine={false} 
                           tickLine={false} 
-                          tick={{fill: '#6B7280', fontSize: 12}} 
+                          tick={{fill: '#94A3B8', fontSize: 12}} 
                           dy={10}
                        />
                        <Bar dataKey="val" radius={[20, 20, 20, 20]} barSize={32}>
                           {heartRateData.map((entry, index) => (
-                             <Cell key={`cell-${index}`} fill={index === 3 ? '#D2F665' : '#FFFFFF'} />
+                             /* 
+                                Chart Coloring:
+                                Light: Default bars are Navy, Highlight is Action Blue.
+                                Dark: Default bars are White/20, Highlight is White.
+                             */
+                             <Cell 
+                                key={`cell-${index}`} 
+                                className="fill-viking-blue/20 dark:fill-white/20"
+                                style={index === 3 ? { fill: 'currentColor', color: 'var(--color-highlight)' } : {}}
+                             />
                           ))}
                        </Bar>
                     </BarChart>
                  </ResponsiveContainer>
+                 {/* Hack to inject dynamic CSS var for highlighted cell based on mode */}
+                 <style>{`
+                    :root { --color-highlight: #0057B8; } 
+                    .dark { --color-highlight: #FFFFFF; }
+                 `}</style>
               </div>
 
               <div className="flex justify-between items-end mt-4 px-2">
                  <div>
-                    <span className="text-4xl font-bold text-white font-display">186</span>
-                    <p className="text-xs text-zinc-500 mt-1">Peak BPM</p>
+                    <span className="text-4xl font-bold text-viking-blue dark:text-white font-display">186</span>
+                    <p className="text-xs text-viking-grey mt-1">Peak BPM</p>
                  </div>
                  <div className="text-right">
-                    <span className="text-xl font-bold text-white font-display">44</span>
-                    <p className="text-xs text-zinc-500 mt-1">Resting BPM</p>
+                    <span className="text-xl font-bold text-viking-blue dark:text-white font-display">44</span>
+                    <p className="text-xs text-viking-grey mt-1">Resting BPM</p>
                  </div>
               </div>
            </Card>
@@ -95,15 +114,15 @@ export const MemberDashboard: React.FC<MemberDashboardProps> = ({ user }) => {
            {/* Agenda / Steps */}
            <div className="flex flex-col sm:flex-row gap-8 items-start pt-4">
               <div className="flex-1">
-                 <p className="text-fitness-textMain dark:text-white font-bold mb-2">1 Agenda :</p>
-                 <div className="flex items-center gap-2 text-fitness-textMuted">
-                    <span className="w-2 h-2 rounded-full bg-fitness-textMain dark:bg-white"></span>
+                 <p className="text-viking-blue dark:text-white font-bold mb-2">1 Agenda :</p>
+                 <div className="flex items-center gap-2 text-viking-grey">
+                    <span className="w-2 h-2 rounded-full bg-viking-blue dark:bg-white"></span>
                     Walking
                  </div>
               </div>
               <div className="flex-1">
-                 <p className="text-fitness-textMuted text-sm font-medium mb-1">Steps :</p>
-                 <h2 className="text-5xl font-bold text-fitness-textMain dark:text-white font-display tracking-tight">7.435</h2>
+                 <p className="text-viking-grey text-sm font-medium mb-1">Steps :</p>
+                 <h2 className="text-5xl font-bold text-viking-blue dark:text-white font-display tracking-tight">7.435</h2>
               </div>
            </div>
         </div>
@@ -111,34 +130,34 @@ export const MemberDashboard: React.FC<MemberDashboardProps> = ({ user }) => {
         {/* Right Col: Daily Activities Grid */}
         <div className="space-y-6">
            <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-fitness-textMain dark:text-white font-display">Daily Activities</h2>
-              <span className="text-xs font-bold text-fitness-textMuted uppercase">Today</span>
+              <h2 className="text-2xl font-bold text-viking-blue dark:text-white font-display">Daily Activities</h2>
+              <span className="text-xs font-bold text-viking-grey uppercase">Today</span>
            </div>
 
            <div className="grid grid-cols-2 gap-6">
               {/* Weight Card */}
               <Card className="h-48 relative group hover:shadow-lg transition-all cursor-pointer">
-                 <div className="absolute top-6 right-6 p-2 rounded-full bg-black text-white group-hover:bg-fitness-lime group-hover:text-black transition-colors">
+                 <div className="absolute top-6 right-6 p-2 rounded-full bg-viking-blue text-white dark:bg-white dark:text-viking-blue transition-colors">
                     <ArrowUpRight size={18} />
                  </div>
                  <div className="flex flex-col justify-between h-full">
-                    <div className="flex items-center gap-2 text-fitness-textMain dark:text-white font-bold">
-                       <span className="p-1.5 border-2 border-fitness-textMain dark:border-white rounded-md">
-                          <div className="w-0.5 h-3 bg-fitness-textMain dark:bg-white mx-auto"></div>
+                    <div className="flex items-center gap-2 text-viking-blue dark:text-white font-bold">
+                       <span className="p-1.5 border-2 border-viking-blue dark:border-white rounded-md">
+                          <div className="w-0.5 h-3 bg-viking-blue dark:bg-white mx-auto"></div>
                        </span>
                        Weight
                     </div>
                     <div>
-                       <span className="text-3xl font-bold text-fitness-textMain dark:text-white font-display">72.2</span>
-                       <span className="text-sm font-medium text-fitness-textMuted ml-1">kg</span>
-                       <p className="text-xs text-fitness-textMuted mt-1">Stable Weight</p>
+                       <span className="text-3xl font-bold text-viking-blue dark:text-white font-display">72.2</span>
+                       <span className="text-sm font-medium text-viking-grey ml-1">kg</span>
+                       <p className="text-xs text-viking-grey mt-1">Stable Weight</p>
                     </div>
                  </div>
               </Card>
 
-              {/* Heart Rate Card */}
-              <Card variant="green" className="h-48 relative group hover:shadow-lg transition-all cursor-pointer">
-                 <div className="absolute top-6 right-6 p-2 rounded-full bg-white text-fitness-darkGreen group-hover:bg-fitness-lime group-hover:text-black transition-colors">
+              {/* Heart Rate Card - Highlighting Action Blue */}
+              <Card variant="highlight" className="h-48 relative group hover:shadow-lg transition-all cursor-pointer">
+                 <div className="absolute top-6 right-6 p-2 rounded-full bg-white text-viking-action transition-colors">
                     <ArrowUpRight size={18} />
                  </div>
                  <div className="flex flex-col justify-between h-full">
@@ -157,23 +176,23 @@ export const MemberDashboard: React.FC<MemberDashboardProps> = ({ user }) => {
               </Card>
 
               {/* Body Composition Card - Full Width */}
-              <Card variant="dark" className="col-span-2 relative group hover:shadow-xl transition-all cursor-pointer">
-                  <div className="absolute top-6 right-6 p-2 rounded-full bg-white text-black group-hover:bg-fitness-lime transition-colors">
+              <Card className="col-span-2 relative group hover:shadow-lg transition-all cursor-pointer">
+                  <div className="absolute top-6 right-6 p-2 rounded-full bg-viking-blue text-white dark:bg-white dark:text-viking-blue transition-colors">
                     <ArrowUpRight size={18} />
                  </div>
                  <div className="flex flex-col md:flex-row justify-between items-end gap-6 h-full">
                     <div className="flex-1 w-full">
-                       <div className="flex items-center gap-2 text-white font-bold mb-6">
+                       <div className="flex items-center gap-2 text-viking-blue dark:text-white font-bold mb-6">
                           <Footprints size={18} />
                           Body Composition
                        </div>
                        
                        <div className="flex items-baseline gap-1">
-                          <span className="text-4xl font-bold text-white font-display">87.9</span>
-                          <span className="text-xl text-white/80 font-display">%</span>
+                          <span className="text-4xl font-bold text-viking-blue dark:text-white font-display">87.9</span>
+                          <span className="text-xl text-viking-grey font-display">%</span>
                        </div>
                        
-                       <div className="mt-4 inline-block px-3 py-1 rounded-full bg-fitness-lime text-black text-xs font-bold">
+                       <div className="mt-4 inline-block px-3 py-1 rounded-full bg-viking-blue text-white dark:bg-white dark:text-viking-blue text-xs font-bold">
                           Gaining Muscle
                        </div>
                     </div>
@@ -181,13 +200,13 @@ export const MemberDashboard: React.FC<MemberDashboardProps> = ({ user }) => {
                     {/* Visual Progress Bar */}
                     <div className="w-full md:w-1/2">
                        <div className="flex h-12 gap-1 items-end">
-                          <div className="h-full w-full bg-fitness-lime rounded-2xl opacity-90 relative">
-                             <div className="absolute right-0 top-0 bottom-0 w-1 bg-white/50"></div>
+                          <div className="h-full w-full bg-viking-blue dark:bg-white rounded-2xl opacity-90 relative">
+                             <div className="absolute right-0 top-0 bottom-0 w-1 bg-white/50 dark:bg-black/20"></div>
                           </div>
-                          <div className="h-10 w-full bg-fitness-lime/30 rounded-2xl"></div>
-                          <div className="h-8 w-full bg-fitness-lime/10 rounded-2xl"></div>
+                          <div className="h-10 w-full bg-viking-blue/30 dark:bg-white/30 rounded-2xl"></div>
+                          <div className="h-8 w-full bg-viking-blue/10 dark:bg-white/10 rounded-2xl"></div>
                        </div>
-                       <div className="flex justify-between text-[10px] text-zinc-500 mt-2 px-1">
+                       <div className="flex justify-between text-[10px] text-viking-grey mt-2 px-1">
                           <span>60</span>
                           <span>70</span>
                           <span>80</span>

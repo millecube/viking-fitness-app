@@ -14,19 +14,26 @@ export const Button: React.FC<ButtonProps> = ({
   className = '',
   ...props 
 }) => {
-  const baseStyles = "inline-flex items-center justify-center rounded font-bold uppercase tracking-wide transition-all duration-200 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed font-display";
+  const baseStyles = "inline-flex items-center justify-center rounded-xl font-bold uppercase tracking-wide transition-all duration-200 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed font-display";
   
   const variants = {
+    // Primary: Action Blue generally works best for Calls to Action in both modes
     primary: "bg-viking-action text-white hover:bg-blue-700 shadow-lg shadow-blue-900/20 border border-transparent",
-    secondary: "bg-slate-200 dark:bg-viking-navyLight text-viking-navy dark:text-white hover:bg-slate-300 dark:hover:bg-slate-700 border border-transparent",
-    outline: "border-2 border-slate-300 dark:border-viking-grey text-slate-500 dark:text-viking-grey hover:border-viking-action hover:text-viking-action bg-transparent",
+    
+    // Secondary: Inverts based on mode
+    secondary: "bg-viking-blue text-white dark:bg-white dark:text-viking-blue hover:opacity-90 border border-transparent",
+    
+    // Outline: Borders follow text color
+    outline: "border-2 border-viking-blue text-viking-blue dark:border-white dark:text-white hover:bg-viking-blue hover:text-white dark:hover:bg-white dark:hover:text-viking-blue bg-transparent",
+    
     danger: "bg-red-600 text-white hover:bg-red-700 border border-transparent",
-    ghost: "text-slate-500 dark:text-viking-grey hover:text-viking-navy dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10"
+    
+    ghost: "text-viking-blue dark:text-white hover:bg-viking-blue/5 dark:hover:bg-white/10"
   };
 
   const sizes = {
-    sm: "px-3 py-1.5 text-xs",
-    md: "px-5 py-2.5 text-sm",
+    sm: "px-4 py-2 text-xs",
+    md: "px-6 py-3 text-sm",
     lg: "px-8 py-4 text-base"
   };
 

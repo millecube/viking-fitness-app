@@ -93,19 +93,34 @@ const App: React.FC = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-viking-navy p-4 relative overflow-hidden">
+      <div className="min-h-screen flex items-center justify-center bg-viking-blue p-4 relative overflow-hidden">
         {/* Background Effects */}
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-           <div className="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] bg-viking-action/10 blur-[120px] rounded-full"></div>
+           <div className="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] bg-viking-action/20 blur-[120px] rounded-full"></div>
            <div className="absolute top-[40%] right-[10%] w-[30%] h-[30%] bg-white/5 blur-[100px] rounded-full"></div>
         </div>
 
-        <div className="w-full max-w-md bg-viking-navyLight border border-viking-action/20 rounded-none p-10 relative z-10 shadow-2xl">
+        <div className="w-full max-w-md bg-white border border-white/10 rounded-3xl p-10 relative z-10 shadow-2xl">
           <div className="text-center mb-10">
-            <div className="inline-flex p-4 rounded-full bg-viking-action mb-4 shadow-lg shadow-blue-500/30">
-              <Sword size={40} className="text-white" />
+            <div className="mb-6 flex justify-center">
+               <div className="relative">
+                  <div className="absolute inset-0 bg-viking-action blur-xl opacity-30 rounded-full"></div>
+                  {/* Note: Ensure the image file 'viking-logo.png' is placed in your public assets folder */}
+                  <img 
+                    src="/viking-logo.png" 
+                    alt="Viking Fitness Logo" 
+                    className="w-32 h-32 object-contain drop-shadow-2xl rounded-full relative z-10 bg-white" 
+                    onError={(e) => {
+                       e.currentTarget.style.display = 'none';
+                       e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                    }}
+                  />
+                  <div className="hidden w-32 h-32 rounded-full bg-viking-blue flex items-center justify-center shadow-xl relative z-10">
+                      <Sword size={64} className="text-white" />
+                  </div>
+               </div>
             </div>
-            <h1 className="text-4xl font-black text-white italic tracking-tighter mb-2 font-display">VIKING <span className="text-viking-action">FITNESS</span></h1>
+            <h1 className="text-4xl font-black text-viking-blue italic tracking-tighter mb-2 font-display">VIKING <span className="text-viking-action">FITNESS</span></h1>
             <p className="text-viking-grey text-sm font-bold uppercase tracking-widest">Trainers for Everyone</p>
           </div>
 
@@ -118,7 +133,7 @@ const App: React.FC = () => {
                   type="email" 
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-viking-navy border border-viking-grey/30 text-white p-3 pl-10 focus:outline-none focus:border-viking-action focus:ring-1 focus:ring-viking-action transition-all placeholder:text-slate-600 font-medium"
+                  className="w-full bg-viking-offWhite border border-viking-grey/30 text-viking-blue p-3 pl-10 rounded-xl focus:outline-none focus:border-viking-action focus:ring-1 focus:ring-viking-action transition-all placeholder:text-slate-400 font-medium"
                   placeholder="admin@hyper.com"
                   required
                 />
@@ -127,7 +142,7 @@ const App: React.FC = () => {
 
             {error && <p className="text-red-500 text-xs text-center font-bold uppercase">{error}</p>}
 
-            <Button type="button" fullWidth variant="primary" onClick={handleLogin} disabled={loading} className="h-14 text-lg">
+            <Button type="button" fullWidth variant="primary" onClick={handleLogin} disabled={loading} className="h-14 text-lg shadow-xl">
               {loading ? 'Authenticating...' : 'Enter Valhalla'}
             </Button>
           </form>
@@ -135,9 +150,9 @@ const App: React.FC = () => {
           <div className="mt-10 pt-6 border-t border-viking-grey/10">
             <p className="text-xs text-center text-viking-grey mb-4 font-bold uppercase tracking-wider">Demo Credentials</p>
             <div className="flex justify-between gap-3 text-xs">
-              <button onClick={() => setEmail('admin@hyper.com')} className="flex-1 py-3 bg-viking-navy hover:bg-black/20 border border-viking-grey/20 text-viking-grey hover:text-white transition-colors font-bold uppercase">Admin</button>
-              <button onClick={() => setEmail('jax@hyper.com')} className="flex-1 py-3 bg-viking-navy hover:bg-black/20 border border-viking-grey/20 text-viking-grey hover:text-white transition-colors font-bold uppercase">Coach</button>
-              <button onClick={() => setEmail('johnny@gmail.com')} className="flex-1 py-3 bg-viking-navy hover:bg-black/20 border border-viking-grey/20 text-viking-grey hover:text-white transition-colors font-bold uppercase">Member</button>
+              <button onClick={() => setEmail('admin@hyper.com')} className="flex-1 py-3 bg-viking-offWhite hover:bg-viking-action/10 border border-viking-grey/20 text-viking-grey hover:text-viking-action transition-colors font-bold uppercase rounded-lg">Admin</button>
+              <button onClick={() => setEmail('jax@hyper.com')} className="flex-1 py-3 bg-viking-offWhite hover:bg-viking-action/10 border border-viking-grey/20 text-viking-grey hover:text-viking-action transition-colors font-bold uppercase rounded-lg">Coach</button>
+              <button onClick={() => setEmail('johnny@gmail.com')} className="flex-1 py-3 bg-viking-offWhite hover:bg-viking-action/10 border border-viking-grey/20 text-viking-grey hover:text-viking-action transition-colors font-bold uppercase rounded-lg">Member</button>
             </div>
           </div>
         </div>
@@ -146,7 +161,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-viking-navy text-viking-navy dark:text-white flex transition-colors duration-300">
+    <div className="min-h-screen bg-viking-offWhite dark:bg-viking-blue text-viking-blue dark:text-white flex transition-colors duration-300">
       <Navigation 
         user={user} 
         onLogout={handleLogout} 

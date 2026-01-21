@@ -28,7 +28,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ user }) => {
     ? null 
     : branches.find(b => b.id === selectedBranchId);
 
-  // Mock aggregate data for charts - Normally this would be filtered by branchId from the DB
+  // Mock aggregate data for charts
   const activityData = [
     { name: 'Mon', active: activeBranch ? Math.floor(activeBranch.activeMembers * 0.4) : 4000 },
     { name: 'Tue', active: activeBranch ? Math.floor(activeBranch.activeMembers * 0.35) : 3000 },
@@ -48,14 +48,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ user }) => {
   ];
 
   const StatCard = ({ title, value, icon: Icon, trend }: any) => (
-    <Card className="border-l-4 border-l-viking-action bg-white dark:bg-viking-navyLight">
+    <Card className="border-l-4 border-l-viking-action">
       <div className="flex justify-between items-start">
         <div>
-          <p className="text-slate-500 dark:text-viking-grey text-xs uppercase font-bold tracking-wider mb-1">{title}</p>
-          <h4 className="text-3xl font-black text-viking-navy dark:text-white font-display">{value}</h4>
-          {trend && <span className="text-yellow-600 dark:text-yellow-500 text-xs flex items-center mt-2 font-bold">+{trend}% this week</span>}
+          <p className="text-viking-grey text-xs uppercase font-bold tracking-wider mb-1">{title}</p>
+          <h4 className="text-3xl font-black text-viking-blue dark:text-white font-display">{value}</h4>
+          {trend && <span className="text-green-600 dark:text-green-400 text-xs flex items-center mt-2 font-bold">+{trend}% this week</span>}
         </div>
-        <div className="p-3 bg-slate-50 dark:bg-viking-navy rounded-none border border-slate-200 dark:border-viking-grey/20 text-viking-action">
+        <div className="p-3 bg-viking-offWhite dark:bg-white/10 rounded-xl text-viking-action dark:text-white">
           <Icon size={24} />
         </div>
       </div>
@@ -66,19 +66,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ user }) => {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-200 dark:border-viking-grey/10 pb-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-viking-grey/10 pb-6">
         <div>
-          <h2 className="text-3xl font-black text-viking-navy dark:text-white uppercase tracking-tight font-display">HQ Command</h2>
-          <span className="flex items-center gap-2 text-xs text-slate-500 dark:text-viking-grey font-bold uppercase tracking-wider">
+          <h2 className="text-3xl font-black text-viking-blue dark:text-white uppercase tracking-tight font-display">HQ Command</h2>
+          <span className="flex items-center gap-2 text-xs text-viking-grey font-bold uppercase tracking-wider">
             <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
             System Operational
           </span>
         </div>
         
-        <div className="flex items-center gap-3 bg-white dark:bg-viking-navyLight p-2 border border-slate-200 dark:border-viking-grey/20">
+        <div className="flex items-center gap-3 bg-white dark:bg-viking-blueLight p-2 border border-viking-grey/20 rounded-xl">
           <Building size={16} className="text-viking-action ml-2" />
           <select 
-            className="bg-transparent text-viking-navy dark:text-white text-sm font-bold focus:outline-none cursor-pointer uppercase tracking-wide"
+            className="bg-transparent text-viking-blue dark:text-white text-sm font-bold focus:outline-none cursor-pointer uppercase tracking-wide"
             value={selectedBranchId}
             onChange={(e) => setSelectedBranchId(e.target.value)}
           >
@@ -127,7 +127,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ user }) => {
                 contentStyle={{ backgroundColor: '#132436', borderColor: '#333', color: '#fff' }} 
                 cursor={{ fill: '#333' }}
               />
-              <Bar dataKey="active" fill="#0057B8" />
+              {/* Bars are Action Blue */}
+              <Bar dataKey="active" fill="#0057B8" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </Card>
@@ -139,7 +140,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ user }) => {
               <XAxis dataKey="name" stroke="#94A3B8" fontSize={12} tickLine={false} axisLine={false} tick={{fill: '#94A3B8'}} />
               <YAxis stroke="#94A3B8" fontSize={12} tickLine={false} axisLine={false} tick={{fill: '#94A3B8'}} />
               <Tooltip contentStyle={{ backgroundColor: '#132436', borderColor: '#333', color: '#fff' }} />
-              <Line type="monotone" dataKey="val" stroke="#DBC067" strokeWidth={3} dot={{ fill: '#DBC067', strokeWidth: 2 }} />
+              <Line type="monotone" dataKey="val" stroke="#132436" strokeWidth={3} dot={{ fill: '#132436', strokeWidth: 2 }} className="dark:stroke-white dark:fill-white" />
+              {/* Hack for line color in dark mode via CSS override is usually needed, or use stroke="currentColor" and a class */}
             </LineChart>
           </ResponsiveContainer>
         </Card>
@@ -147,8 +149,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ user }) => {
 
       <Card title="Branch List">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-slate-500 dark:text-viking-grey">
-            <thead className="bg-slate-100 dark:bg-viking-navyLight text-xs uppercase font-bold text-viking-navy dark:text-white tracking-wider border-b border-slate-200 dark:border-viking-grey/20">
+          <table className="w-full text-left text-sm text-viking-grey">
+            <thead className="bg-viking-offWhite dark:bg-viking-blueLight text-xs uppercase font-bold text-viking-blue dark:text-white tracking-wider border-b border-viking-grey/20">
               <tr>
                 <th className="p-4">Branch Name</th>
                 <th className="p-4">Location</th>
@@ -156,15 +158,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ user }) => {
                 <th className="p-4 text-right">Members</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-viking-grey/10">
+            <tbody className="divide-y divide-viking-grey/10">
               {branches
                 .filter(b => selectedBranchId === 'all' || b.id === selectedBranchId)
                 .map(branch => (
-                <tr key={branch.id} className="hover:bg-slate-50 dark:hover:bg-black/20 transition-colors">
-                  <td className="p-4 font-bold text-viking-navy dark:text-white uppercase">{branch.name}</td>
+                <tr key={branch.id} className="hover:bg-viking-offWhite dark:hover:bg-white/5 transition-colors">
+                  <td className="p-4 font-bold text-viking-blue dark:text-white uppercase">{branch.name}</td>
                   <td className="p-4">{branch.location}</td>
                   <td className="p-4">
-                    <span className="inline-flex items-center gap-1.5 px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-500 text-xs font-bold uppercase tracking-wider border border-green-200 dark:border-green-500/20">
+                    <span className="inline-flex items-center gap-1.5 px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-xs font-bold uppercase tracking-wider border border-green-200 dark:border-green-500/20 rounded-md">
                       Operational
                     </span>
                   </td>

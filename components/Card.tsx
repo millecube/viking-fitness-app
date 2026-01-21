@@ -5,31 +5,31 @@ interface CardProps {
   className?: string;
   title?: string;
   action?: React.ReactNode;
-  variant?: 'white' | 'dark' | 'green';
+  variant?: 'default' | 'highlight';
 }
 
-export const Card: React.FC<CardProps> = ({ children, className = '', title, action, variant = 'white' }) => {
-  const bgStyles = {
-    white: 'bg-white dark:bg-zinc-900 border-none',
-    dark: 'bg-fitness-black text-white border-none',
-    green: 'bg-fitness-darkGreen text-white border-none'
-  };
+export const Card: React.FC<CardProps> = ({ children, className = '', title, action, variant = 'default' }) => {
+  // Logic: 
+  // Light Mode: White Background
+  // Dark Mode: Lighter Navy (viking-blueLight) to distinguish from main background
+  
+  const bgClass = variant === 'highlight' 
+    ? 'bg-viking-action text-white' 
+    : 'bg-white dark:bg-viking-blueLight border border-viking-blue/5 dark:border-white/5';
 
-  const textStyles = {
-    white: 'text-fitness-textMain dark:text-white',
-    dark: 'text-white',
-    green: 'text-white'
-  };
+  const textClass = variant === 'highlight'
+    ? 'text-white'
+    : 'text-viking-blue dark:text-white';
 
   return (
-    <div className={`${bgStyles[variant]} shadow-sm rounded-4xl overflow-hidden flex flex-col transition-colors duration-300 ${className}`}>
+    <div className={`${bgClass} ${textClass} shadow-sm rounded-3xl overflow-hidden flex flex-col transition-colors duration-300 ${className}`}>
       {(title || action) && (
-        <div className="px-8 py-6 flex justify-between items-center">
-          {title && <h3 className={`${textStyles[variant]} font-bold tracking-tight text-lg`}>{title}</h3>}
+        <div className="px-6 py-5 flex justify-between items-center border-b border-black/5 dark:border-white/5">
+          {title && <h3 className={`font-bold tracking-tight text-lg ${variant === 'highlight' ? 'text-white' : 'text-viking-blue dark:text-white'}`}>{title}</h3>}
           {action && <div>{action}</div>}
         </div>
       )}
-      <div className="p-8 flex-1">
+      <div className="p-6 flex-1">
         {children}
       </div>
     </div>
